@@ -74,7 +74,7 @@ function LeadTable({ leads, onChanged }: { leads: Lead[]; onChanged: () => void 
             </thead>
             <tbody>
               {filtered.map((lead) => (
-                <tr key={lead._id} style={{ borderTop: `1px solid ${theme.colors.border}` }}>
+                <tr key={lead._id} style={{ borderTop: `1px solid ${theme.colors.border}`, animation: "fadeIn 0.3s ease" }}>
                   <td style={{ padding: 10 }}>{lead.name}</td>
                   <td style={{ padding: 10 }}>{lead.email}</td>
                   <td style={{ padding: 10 }}>₹{lead.budget}</td>
