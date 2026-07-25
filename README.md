@@ -211,7 +211,7 @@ CORS on the backend is explicitly restricted to the known frontend origins (`loc
 
 ## 🎥 Walkthrough
 
-A Loom recording covering the full flow — public form submission → admin login → dashboard stats → lead search/filter → status update — is linked here: **[Loom link]**
+A Loom recording covering the full flow — public form submission → admin login → dashboard stats → lead search/filter → status update — is linked here: [**[Loom link]**](https://loom.com/share/226dc9019eb74c2ea2a8d3ecf180bf7d)
 
 ---
 
