@@ -2,30 +2,38 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
+import authRoutes from "./routes/authRoutes";
+import leadRoutes from "./routes/leadRoutes";
+
 const app = express();
 
 // =======================
-// Global Middlewares
+// Middlewares
 // =======================
 
-// Allow frontend to access backend
 app.use(cors());
 
-// Parse JSON request body
 app.use(express.json());
 
-// Parse cookies
 app.use(cookieParser());
 
 // =======================
-// Health Check Route
+// Health Check
 // =======================
 
 app.get("/", (_req, res) => {
   res.status(200).json({
     success: true,
-    message: "🚀 LeadDesk Mini Backend is Running Successfully"
+    message: "🚀 LeadDesk Mini Backend is Running Successfully",
   });
 });
+
+// =======================
+// API Routes
+// =======================
+
+app.use("/api/auth", authRoutes);
+
+app.use("/api/leads", leadRoutes);
 
 export default app;
