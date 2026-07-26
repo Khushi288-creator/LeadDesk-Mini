@@ -22,15 +22,36 @@ function Home() {
   };
 
   const validate = () => {
-    const errs: Record<string, string> = {};
-    if (!form.name.trim()) errs.name = "Name is required";
-    if (!form.email.trim()) errs.email = "Email is required";
-    else if (!/^\S+@\S+\.\S+$/.test(form.email)) errs.email = "Invalid email";
-    if (!form.budget) errs.budget = "Select a budget range";
-    if (!form.message.trim()) errs.message = "Message is required";
-    setErrors(errs);
-    return Object.keys(errs).length === 0;
-  };
+  const errs: Record<string, string> = {};
+
+  // Name: only letters and spaces, at least 2 characters
+  if (!form.name.trim()) {
+    errs.name = "Name is required";
+  } else if (!/^[A-Za-z\s]{2,50}$/.test(form.name.trim())) {
+    errs.name = "Name should only contain letters (2-50 characters)";
+  }
+
+  // Email: proper format check
+  if (!form.email.trim()) {
+    errs.email = "Email is required";
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.email.trim())) {
+    errs.email = "Enter a valid email address";
+  }
+
+  if (!form.budget) {
+    errs.budget = "Select a budget range";
+  }
+
+  // Message: minimum meaningful length
+  if (!form.message.trim()) {
+    errs.message = "Message is required";
+  } else if (form.message.trim().length < 10) {
+    errs.message = "Please write at least 10 characters describing your project";
+  }
+
+  setErrors(errs);
+  return Object.keys(errs).length === 0;
+};
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
