@@ -1,6 +1,10 @@
-import { Resend } from "resend";
+import * as brevo from "@getbrevo/brevo";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const apiInstance = new brevo.TransactionalEmailsApi();
+apiInstance.setApiKey(
+  brevo.TransactionalEmailsApiApiKeys.apiKey,
+  process.env.BREVO_API_KEY as string
+);
 
 export const sendStatusUpdateEmail = async (
   toEmail: string,
@@ -12,19 +16,20 @@ export const sendStatusUpdateEmail = async (
     Closed: "Thank you for your interest. This inquiry has been marked as closed.",
   };
 
+  const email = new brevo.SendSmtpEmail();
+  email.sender = { name: "LeadDesk", email: "trivedikhushi510@gmail.com" };
+  email.to = [{ email: toEmail, name: leadName }];
+  email.subject = `Update on your inquiry — Status: ${newStatus}`;
+  email.htmlContent = `
+    <div style="font-family: sans-serif; padding: 20px;">
+      <h2>Hi ${leadName},</h2>
+      <p>${statusMessages[newStatus] || `Your inquiry status has been updated to: ${newStatus}`}</p>
+      <p style="color: #6b7280; font-size: 13px; margin-top: 30px;">— LeadDesk Team</p>
+    </div>
+  `;
+
   try {
-    await resend.emails.send({
-      from: "LeadDesk <onboarding@resend.dev>",
-      to: toEmail,
-      subject: `Update on your inquiry — Status: ${newStatus}`,
-      html: `
-        <div style="font-family: sans-serif; padding: 20px;">
-          <h2>Hi ${leadName},</h2>
-          <p>${statusMessages[newStatus] || `Your inquiry status has been updated to: ${newStatus}`}</p>
-          <p style="color: #6b7280; font-size: 13px; margin-top: 30px;">— LeadDesk Team</p>
-        </div>
-      `,
-    });
+    await apiInstance.sendTransacEmail(email);
     console.log(`Status email sent to ${toEmail}`);
   } catch (err) {
     console.log("Email send failed:", err);
