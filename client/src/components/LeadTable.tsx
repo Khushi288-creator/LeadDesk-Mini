@@ -6,6 +6,34 @@ import { updateLeadStatus } from "../services/leadService";
 import { useToast } from "./Toast";
 import { theme } from "../theme";
 
+const exportToCSV = (leads: Lead[]) => {
+  if (leads.length === 0) {
+    alert("No leads to export");
+    return;
+  }
+
+  const headers = ["Name", "Email", "Budget", "Status", "Message", "Created At"];
+  const rows = leads.map((lead) => [
+    lead.name,
+    lead.email,
+    lead.budget,
+    lead.status,
+    `"${(lead.message || "").replace(/"/g, '""')}"`,
+    new Date(lead.createdAt).toLocaleDateString(),
+  ]);
+
+  const csvContent = [headers, ...rows].map((row) => row.join(",")).join("\n");
+
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.setAttribute("download", `leads-${new Date().toISOString().split("T")[0]}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
 function LeadTable({ leads, onChanged }: { leads: Lead[]; onChanged: () => void }) {
   const showToast = useToast();
   const [search, setSearch] = useState("");
@@ -56,6 +84,22 @@ function LeadTable({ leads, onChanged }: { leads: Lead[]; onChanged: () => void 
           <option>Contacted</option>
           <option>Closed</option>
         </select>
+
+        <button
+          onClick={() => exportToCSV(filtered)}
+          style={{
+            padding: "10px 16px",
+            background: theme.colors.success,
+            color: "#fff",
+            border: "none",
+            borderRadius: 8,
+            cursor: "pointer",
+            fontWeight: 600,
+            whiteSpace: "nowrap",
+          }}
+        >
+          📥 Export CSV
+        </button>
       </div>
 
       {filtered.length === 0 ? (

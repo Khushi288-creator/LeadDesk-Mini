@@ -10,4 +10,6 @@ export const updateLeadStatus = (id: string, status: string) =>
 
 export const getStats = () => api.get<{ stats: Stats }>("/leads/stats");
 
+export const getChartData = () => api.get("/leads/chart-data");
+
 import type { Stats } from "../types";

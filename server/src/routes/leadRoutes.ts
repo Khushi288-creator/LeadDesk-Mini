@@ -5,6 +5,7 @@ import {
   getLeads,
   updateLeadStatus,
   getDashboardStats,
+  getChartData,
 } from "../controllers/leadController";
 
 import authMiddleware from "../middleware/authMiddleware";
@@ -24,6 +25,9 @@ router.post("/", createLead);
 
 // Dashboard Statistics
 router.get("/stats", authMiddleware, getDashboardStats);
+
+// Chart Data (last 7 days)
+router.get("/chart-data", authMiddleware, getChartData);
 
 // Get All Leads
 router.get("/", authMiddleware, getLeads);

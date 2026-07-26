@@ -179,3 +179,33 @@ export const getDashboardStats = async (
     });
   }
 };
+
+/**
+ * @desc Leads count grouped by date (last 7 days)
+ * @route GET /api/leads/chart-data
+ */
+export const getChartData = async (req: Request, res: Response) => {
+  try {
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+    sevenDaysAgo.setHours(0, 0, 0, 0);
+
+    const leads = await Lead.aggregate([
+      {
+        $match: { createdAt: { $gte: sevenDaysAgo } },
+      },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    res.status(200).json({ success: true, chartData: leads });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
