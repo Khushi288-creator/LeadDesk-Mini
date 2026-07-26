@@ -1,17 +1,6 @@
-import nodemailer from "nodemailer";
-import SMTPTransport from "nodemailer/lib/smtp-transport";
+import { Resend } from "resend";
 
-
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_APP_PASSWORD,
-  },
-  family: 4, // 👈 ye line force karegi IPv4 use karne ke liye
-} as SMTPTransport.Options);
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const sendStatusUpdateEmail = async (
   toEmail: string,
@@ -24,8 +13,8 @@ export const sendStatusUpdateEmail = async (
   };
 
   try {
-    await transporter.sendMail({
-      from: `"LeadDesk" <${process.env.EMAIL_USER}>`,
+    await resend.emails.send({
+      from: "LeadDesk <onboarding@resend.dev>",
       to: toEmail,
       subject: `Update on your inquiry — Status: ${newStatus}`,
       html: `
